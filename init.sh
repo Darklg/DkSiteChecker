@@ -5,7 +5,7 @@ SCRIPTDIR="$( dirname "${BASH_SOURCE[0]}" )/";
 cat <<EOF
 
 ###################################
-## DK Site Checker v 0.2.0
+## DK Site Checker v 0.2.1
 ###################################
 
 EOF
@@ -48,6 +48,11 @@ if [[ -f "../wputools-urls.txt" ]];then
 fi;
 if [[ "${1}" != "" && -f "${1}" ]];then
     _DKSITEURLLIST="${1}";
+fi;
+
+if [[ "${_DKSITEURLLIST}" == "" ]];then
+    echo "Error: Couldn’t find an URL list.";
+    return 0;
 fi;
 
 ###################################
