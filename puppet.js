@@ -27,6 +27,19 @@ const puppeteer = require('puppeteer');
             console.log(`${request.failure().errorText} ${request.url()}`);
         });
 
+
+    console.log("# JS Errors");
     await page.goto(myArgs[0]);
+
+    console.log("# Page Metrics");
+    const gitMetrics = await page.metrics();
+    if(gitMetrics.Nodes > 1500){
+        console.info("- Too many DOM nodes : " + gitMetrics.Nodes)
+    }
+    if(gitMetrics.ScriptDuration > 0.1){
+        console.info("- Script Duration too long : " + gitMetrics.ScriptDuration)
+    }
+
+
     await browser.close();
 })();

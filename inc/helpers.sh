@@ -31,6 +31,19 @@ function dksitechecker_docspeed(){
 ###################################
 
 function dksitechecker_jscheck(){
-    echo "# JS Errors";
     node "${SCRIPTDIR}/puppet.js" "${1}";
+}
+
+###################################
+## Common
+###################################
+
+function dksitechecker_checkurl(){
+    echo "";
+    echo "####################";
+    echo "## Test : ${1}";
+    echo "";
+    dksitechecker_html_validator "${1}";
+    dksitechecker_docspeed "${1}";
+    dksitechecker_jscheck "${1}";
 }

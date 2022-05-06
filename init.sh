@@ -5,7 +5,7 @@ SCRIPTDIR="$( dirname "${BASH_SOURCE[0]}" )/";
 cat <<EOF
 
 ###################################
-## DK Site Checker v 0.2.1
+## DK Site Checker v 0.3.0
 ###################################
 
 EOF
@@ -63,11 +63,5 @@ while read line; do
     if [[ "${line}" == "" ]];then
         continue;
     fi;
-    echo "";
-    echo "####################";
-    echo "## Test : ${line}";
-    echo "";
-    dksitechecker_html_validator "${line}";
-    dksitechecker_docspeed "${line}";
-    dksitechecker_jscheck "${line}";
+    dksitechecker_checkurl "${line}";
 done < "${_DKSITEURLLIST}";
