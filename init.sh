@@ -5,7 +5,7 @@ SCRIPTDIR="$( dirname "${BASH_SOURCE[0]}" )/";
 cat <<EOF
 
 ###################################
-## DK Site Checker v 0.3.0
+## DK Site Checker v 0.4.0
 ###################################
 
 EOF
@@ -20,7 +20,7 @@ do
     command -v "$i" >/dev/null 2>&1 || { echo >&2 "You need to install \"${i}\" to continue."; return 0; }
 done;
 
-_main_node_packages="puppeteer html-validator-cli";
+_main_node_packages="puppeteer html-validator-cli pixelmatch";
 for package in $_main_node_packages
 do
     if [ `npm list -g | grep -c $package` -eq 0 ]; then
@@ -34,23 +34,30 @@ done;
 ###################################
 
 . "${SCRIPTDIR}inc/helpers.sh";
+. "${SCRIPTDIR}inc/BashUtilities/bashutilities.sh";
 
 ###################################
 ## Load URL list
 ###################################
 
 _DKSITEURLLIST="";
-if [[ -f "wputools-urls.txt" ]];then
-    _DKSITEURLLIST="wputools-urls.txt";
-fi;
-if [[ -f "../wputools-urls.txt" ]];then
-    _DKSITEURLLIST="../wputools-urls.txt";
+_DKSITEURLBASE="";
+if [[ "${1}" == "" ]];then
+    if [[ -f "wputools-urls.txt" ]];then
+        _DKSITEURLLIST="wputools-urls.txt";
+    fi;
+    if [[ -f "../wputools-urls.txt" ]];then
+        _DKSITEURLLIST="../wputools-urls.txt";
+    fi;
 fi;
 if [[ "${1}" != "" && -f "${1}" ]];then
     _DKSITEURLLIST="${1}";
 fi;
+if [[ "${1}" != "" && ! -f "${1}" ]];then
+    _DKSITEURLBASE="${1}";
+fi;
 
-if [[ "${_DKSITEURLLIST}" == "" ]];then
+if [[ "${_DKSITEURLLIST}" == "" && "${_DKSITEURLBASE}" == "" ]];then
     echo "Error: Couldn’t find an URL list.";
     return 0;
 fi;
@@ -59,9 +66,14 @@ fi;
 ## Run urls
 ###################################
 
-while read line; do
-    if [[ "${line}" == "" ]];then
-        continue;
-    fi;
-    dksitechecker_checkurl "${line}";
-done < "${_DKSITEURLLIST}";
+if [[ "${_DKSITEURLLIST}" != "" ]];then
+    while read line; do
+        if [[ "${line}" == "" ]];then
+            continue;
+        fi;
+        arrLine=(${line//;/ })
+        dksitechecker_checkurl "${arrLine[0]}" "${arrLine[1]}";
+    done < "${_DKSITEURLLIST}";
+else
+    dksitechecker_checkurl "${_DKSITEURLBASE}" "${2}";
+fi;

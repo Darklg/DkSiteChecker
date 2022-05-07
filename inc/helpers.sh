@@ -27,11 +27,18 @@ function dksitechecker_docspeed(){
 }
 
 ###################################
-## JS errors
+## Check headless nav
 ###################################
 
-function dksitechecker_jscheck(){
-    node "${SCRIPTDIR}/puppet.js" "${1}";
+function dksitechecker_headlesscheck(){
+    node "${SCRIPTDIR}/puppet.js" "${1}" "${2}";
+    local _slug=$(bashutilities_string_to_slug "${1}");
+    if [[ "${2}" != "" && -f "page-current.png" && -f "page-source.png" ]];then
+        pixelmatch  "page-current.png" "page-source.png" "diff-${_slug}.png" 0.1
+    fi;
+    if [[ "${2}" != "" && -f "pagemobile-current.png" && -f "pagemobile-source.png" ]];then
+        pixelmatch  "pagemobile-current.png" "pagemobile-source.png" "diff-${_slug}-mobile.png" 0.1
+    fi;
 }
 
 ###################################
@@ -45,5 +52,5 @@ function dksitechecker_checkurl(){
     echo "";
     dksitechecker_html_validator "${1}";
     dksitechecker_docspeed "${1}";
-    dksitechecker_jscheck "${1}";
+    dksitechecker_headlesscheck "${1}" "${2}";
 }
