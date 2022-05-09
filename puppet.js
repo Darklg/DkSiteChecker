@@ -36,8 +36,15 @@ const puppeteer = require('puppeteer');
             console.log(`${request.failure().errorText} ${request.url()}`);
         });
 
+
     console.log("# JS Errors");
     await page.goto(myArgs[0]);
+    await page.evaluate(() => {
+             var element = document.createElement('style');
+             document.head.appendChild(element);
+             var styles = '.qc-cmp2-container{display:none!important;}';
+             element.sheet.insertRule(styles, 0);
+           });
     await page.setViewport(_viewport);
 
     console.log("# Page Metrics");
@@ -62,6 +69,12 @@ const puppeteer = require('puppeteer');
         });
 
         await page.goto(myArgs[1]);
+        await page.evaluate(() => {
+                 var element = document.createElement('style');
+                 document.head.appendChild(element);
+                 var styles = '.qc-cmp2-container{display:none!important;}';
+                 element.sheet.insertRule(styles, 0);
+               });
         console.log("- Screenshot source");
         await page.setViewport(_viewport);
         await page.waitForTimeout(3000);
