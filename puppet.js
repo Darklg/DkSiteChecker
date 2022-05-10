@@ -14,6 +14,7 @@ const puppeteer = require('puppeteer');
             height: 2560
         };
 
+    /* Trigger errors */
     page
         .on('console', function(message) {
             var oktypes = ['LOG'];
@@ -37,14 +38,16 @@ const puppeteer = require('puppeteer');
         });
 
 
+    /* Helper : hide cookie */
+    var dksitechecker_hide_cookie_notices = function(){
+        var element = document.createElement('style');
+        document.head.appendChild(element);
+        element.sheet.insertRule('.qc-cmp2-container,body>.cookie-notice,.modal[data-visible="1"]{display:none!important}', 0);
+    }
+
     console.log("# JS Errors");
     await page.goto(myArgs[0]);
-    await page.evaluate(() => {
-             var element = document.createElement('style');
-             document.head.appendChild(element);
-             var styles = '.qc-cmp2-container{display:none!important;}';
-             element.sheet.insertRule(styles, 0);
-           });
+    await page.evaluate(dksitechecker_hide_cookie_notices);
     await page.setViewport(_viewport);
 
     console.log("# Page Metrics");
@@ -57,6 +60,7 @@ const puppeteer = require('puppeteer');
     }
 
     if (myArgs[1].length) {
+        /* Screenshot current URL */
         console.log("- Screenshot current");
         await page.waitForTimeout(3000);
         await page.screenshot({
@@ -68,24 +72,25 @@ const puppeteer = require('puppeteer');
             path: `pagemobile-current.png`
         });
 
-        await page.goto(myArgs[1]);
-        await page.evaluate(() => {
-                 var element = document.createElement('style');
-                 document.head.appendChild(element);
-                 var styles = '.qc-cmp2-container{display:none!important;}';
-                 element.sheet.insertRule(styles, 0);
-               });
+        /* Screenshot source URL */
         console.log("- Screenshot source");
-        await page.setViewport(_viewport);
-        await page.waitForTimeout(3000);
-        await page.screenshot({
+        const browser2 = await puppeteer.launch();
+        const page2 = await browser2.newPage();
+
+        await page2.goto(myArgs[1]);
+        await page2.evaluate(dksitechecker_hide_cookie_notices);
+        await page2.setViewport(_viewport);
+        await page2.waitForTimeout(3000);
+        await page2.screenshot({
             path: `page-source.png`
         });
-        await page.setViewport(_viewportmob);
-        await page.waitForTimeout(500);
-        await page.screenshot({
+        await page2.setViewport(_viewportmob);
+        await page2.waitForTimeout(500);
+        await page2.screenshot({
             path: `pagemobile-source.png`
         });
+        await browser2.close();
+
     }
 
     await browser.close();

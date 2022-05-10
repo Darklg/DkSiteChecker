@@ -5,7 +5,7 @@ SCRIPTDIR="$( dirname "${BASH_SOURCE[0]}" )/";
 cat <<EOF
 
 ###################################
-## DK Site Checker v 0.5.0
+## DK Site Checker v 0.5.1
 ###################################
 
 EOF
