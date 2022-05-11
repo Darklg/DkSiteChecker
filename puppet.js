@@ -1,6 +1,8 @@
 const myArgs = process.argv.slice(2);
 const puppeteer = require('puppeteer');
 
+const puppet_args = JSON.parse(myArgs[0]);
+
 (async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -37,17 +39,16 @@ const puppeteer = require('puppeteer');
             console.log(`${request.failure().errorText} ${request.url()}`);
         });
 
-
     /* Helper : hide cookie */
-    var dksitechecker_hide_cookie_notices = function(){
+    var dksitechecker_hide_cookie_notices = function(puppet_args) {
         var element = document.createElement('style');
         document.head.appendChild(element);
-        element.sheet.insertRule('.qc-cmp2-container,body>.cookie-notice,.modal[data-visible="1"]{display:none!important}', 0);
+        element.sheet.insertRule(puppet_args.hidden_elements + '{display:none!important}', 0);
     }
 
     console.log("# JS Errors");
-    await page.goto(myArgs[0]);
-    await page.evaluate(dksitechecker_hide_cookie_notices);
+    await page.goto(puppet_args.urlcurrent);
+    await page.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
     await page.setViewport(_viewport);
 
     console.log("# Page Metrics");
@@ -59,7 +60,7 @@ const puppeteer = require('puppeteer');
         console.info("- Script Duration too long : " + gitMetrics.ScriptDuration)
     }
 
-    if (myArgs[1].length) {
+    if (puppet_args.urlsource.length) {
         /* Screenshot current URL */
         console.log("- Screenshot current");
         await page.waitForTimeout(3000);
@@ -77,8 +78,8 @@ const puppeteer = require('puppeteer');
         const browser2 = await puppeteer.launch();
         const page2 = await browser2.newPage();
 
-        await page2.goto(myArgs[1]);
-        await page2.evaluate(dksitechecker_hide_cookie_notices);
+        await page2.goto(puppet_args.urlsource);
+        await page2.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
         await page2.setViewport(_viewport);
         await page2.waitForTimeout(3000);
         await page2.screenshot({
