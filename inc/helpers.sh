@@ -35,7 +35,7 @@ function dksitechecker_headlesscheck(){
     if [[ "${dksitechecker_hidden_elements}" != "" ]];then
         _hidden_elements="${dksitechecker_hidden_elements}";
     fi;
-    node "${SCRIPTDIR}/puppet.js" "{\"urlcurrent\":\"${1}\",\"urlsource\":\"${2}\",\"hidden_elements\":\"${_hidden_elements}\"}";
+    node "${SCRIPTDIR}/inc/puppet.js" "{\"urlcurrent\":\"${1}\",\"urlsource\":\"${2}\",\"hidden_elements\":\"${_hidden_elements}\"}";
     local _slug=$(bashutilities_string_to_slug "${1}");
     if [[ "${2}" != "" && -f "page-current.png" && -f "page-source.png" ]];then
         pixelmatch  "page-current.png" "page-source.png" "diff-${_slug}.png" 0.1

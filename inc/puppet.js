@@ -51,6 +51,28 @@ const puppet_args = JSON.parse(myArgs[0]);
     await page.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
     await page.setViewport(_viewport);
 
+    console.log("# Invalid elements");
+    var _rule_count,
+        _rules = [
+            '[id=""],[class=""],[name=""],[for=""]',
+            'a a',
+            'button:not([type])',
+            'form form',
+            'i[class*="icon_"]:not([aria-hidden])',
+            'img:not([alt])',
+            'p div',
+            'p p',
+        ];
+    for (var _rule in _rules) {
+        try {
+            await page.$$(_rules[_rule])
+            if (_rule_count = (await page.$$(_rules[_rule])).length) {
+                console.log("- " + _rules[_rule] + " : " + _rule_count + " result(s)");
+            }
+        }
+        catch {}
+    }
+
     console.log("# Page Metrics");
     const gitMetrics = await page.metrics();
     if (gitMetrics.Nodes > 1500) {
