@@ -55,13 +55,15 @@ const puppet_args = JSON.parse(myArgs[0]);
     var _rule_count,
         _rules = [
             '[id=""],[class=""],[name=""],[for=""]',
-            'a a',
+            '[onclick],[onload],[onkeydown]',
+            'a[href=""],a[href=" "]',
             'button:not([type])',
-            'form form',
+            'form:not([action])',
             'i[class*="icon_"]:not([aria-hidden])',
-            'img:not([alt])',
-            'p div',
-            'p p',
+            'input:not([name])',
+            'input:not([type])',
+            'a[target]:not(rel)',
+            'title:empty',
         ];
     for (var _rule in _rules) {
         try {
