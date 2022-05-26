@@ -5,7 +5,7 @@ SCRIPTDIR="$( dirname "${BASH_SOURCE[0]}" )/";
 cat <<EOF
 
 ###################################
-## DK Site Checker v 0.6.1
+## DK Site Checker v 0.6.2
 ###################################
 
 EOF
@@ -60,6 +60,15 @@ fi;
 if [[ "${_DKSITEURLLIST}" == "" && "${_DKSITEURLBASE}" == "" ]];then
     echo "Error: Couldn’t find an URL list.";
     return 0;
+fi;
+
+if [[ "${_DKSITEURLBASE}" != "" ]];then
+    if curl --head --silent --fail "${_DKSITEURLBASE}" 2> /dev/null; then
+        echo "This page exists.";
+    else
+        echo "Error: Invalid URL : \"${_DKSITEURLBASE}\"";
+        return 0;
+    fi
 fi;
 
 ###################################
