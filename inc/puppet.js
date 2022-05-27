@@ -6,7 +6,7 @@ const puppet_args = JSON.parse(myArgs[0]);
 (async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    var okresponses = [200, 206, 302, 301],
+    var okresponses = [200, 204, 206, 302, 301],
         _viewport = {
             width: 1080,
             height: 2560
@@ -51,28 +51,61 @@ const puppet_args = JSON.parse(myArgs[0]);
     await page.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
     await page.setViewport(_viewport);
 
-    console.log("# Invalid elements");
-    var _rule_count,
-        _rules = [
-            '[id=""],[class=""],[name=""],[for=""]',
-            '[onclick],[onload],[onkeydown]',
-            'a[href=""],a[href=" "]',
-            'button:not([type])',
-            'form:not([action])',
-            'i[class*="icon_"]:not([aria-hidden])',
-            'input:not([name])',
-            'input:not([type])',
-            'a[target]:not(rel)',
-            'title:empty',
-        ];
-    for (var _rule in _rules) {
-        try {
-            await page.$$(_rules[_rule])
-            if (_rule_count = (await page.$$(_rules[_rule])).length) {
-                console.log("- " + _rules[_rule] + " : " + _rule_count + " result(s)");
-            }
+    var _rules_list = {
+        'access': {
+            'name': 'Accessibility problems',
+            'rules': [
+                'button:not([title]) > [class*="icon"]:only-child',
+                'a[href="#"]:not([role])',
+                'i[class*="icon"]:not([aria-hidden])',
+            ]
+        },
+        'perf': {
+            'name': 'Performance problems',
+            'rules': [
+                'img:not([loading])',
+                'iframe:not([loading])',
+            ]
+        },
+        'security': {
+            'name': 'Security problems',
+            'rules': [
+                'a[target]:not(rel)',
+            ]
+        },
+        'various': {
+            'name': 'Various problems',
+            'rules': [
+                '[id=""],[class=""],[name=""],[for=""]',
+                '[onclick],[onload],[onkeydown]',
+                'a[href=""],a[href=" "]',
+                'button:not([type])',
+                'form:not([action])',
+                'input:not([name])',
+                'input:not([type])',
+                'html:not([lang])',
+                'title:empty',
+            ]
         }
-        catch {}
+
+    }
+
+    console.log("# Invalid elements");
+
+    var _rule_count,
+        _rules;
+    for (var _rule_item in _rules_list) {
+        console.log('- ' + _rules_list[_rule_item].name);
+        _rules = _rules_list[_rule_item].rules;
+        for (var _rule in _rules) {
+            try {
+                await page.$$(_rules[_rule])
+                if (_rule_count = (await page.$$(_rules[_rule])).length) {
+                    console.log(" --- " + _rules[_rule] + " : " + _rule_count + " result(s)");
+                }
+            }
+            catch {}
+        }
     }
 
     console.log("# Page Metrics");
