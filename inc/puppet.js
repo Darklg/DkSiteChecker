@@ -19,9 +19,9 @@ const puppet_args = JSON.parse(myArgs[0]);
     /* Trigger errors */
     page
         .on('console', function(message) {
-            var oktypes = ['LOG'];
+            var ignoredtypes = ['LOG'];
             var _type = message.type().substr(0, 3).toUpperCase();
-            if (oktypes.includes(_type)) {
+            if (ignoredtypes.includes(_type)) {
                 return;
             }
             console.log(`${_type} ${message.text()}`);
@@ -36,6 +36,10 @@ const puppet_args = JSON.parse(myArgs[0]);
             console.log(`${response.status()} ${response.url()}`)
         })
         .on('requestfailed', function(request) {
+            var ignoredtypes = ['net::ERR_ABORTED'];
+            if(ignoredtypes.includes(request.failure().errorText)){
+                return;
+            }
             console.log(`${request.failure().errorText} ${request.url()}`);
         });
 
@@ -50,6 +54,15 @@ const puppet_args = JSON.parse(myArgs[0]);
     await page.goto(puppet_args.urlcurrent);
     await page.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
     await page.setViewport(_viewport);
+
+    await page.evaluate(function(puppet_args) {
+        var _cookies = ['_ga', '_gid', '_fbp', '__hstc'];
+        for (var i = 0, len = _cookies.length; i < len; i++) {
+            if (document.cookie.indexOf(_cookies[i] + '=') > -1) {
+                console.error('The cookie “' + _cookies[i] + '” should not be present without user consent.');
+            }
+        }
+    });
 
     var _rules_list = {
         'access': {
