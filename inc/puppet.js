@@ -37,7 +37,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         })
         .on('requestfailed', function(request) {
             var ignoredtypes = ['net::ERR_ABORTED'];
-            if(ignoredtypes.includes(request.failure().errorText)){
+            if (ignoredtypes.includes(request.failure().errorText)) {
                 return;
             }
             console.log(`${request.failure().errorText} ${request.url()}`);
@@ -100,7 +100,6 @@ const puppet_args = JSON.parse(myArgs[0]);
                 'title:empty',
             ]
         }
-
     }
 
     console.log("# Invalid elements");
@@ -119,6 +118,24 @@ const puppet_args = JSON.parse(myArgs[0]);
             }
             catch {}
         }
+    }
+
+    /* Add special rules */
+    var _special_rules = [function() {
+        if (document.querySelectorAll('meta[charset]').length < 1) {
+            console.error('The meta charset is missing.');
+        }
+    }, function() {
+        if (document.querySelectorAll('h1').length < 1) {
+            console.error('There is no H1 element.');
+        }
+    }, function() {
+        if (document.querySelectorAll('h1').length > 1) {
+            console.error('There is more than H1 element.');
+        }
+    }];
+    for (var _rule_test in _special_rules) {
+        await page.evaluate(_special_rules[_rule_test]);
     }
 
     console.log("# Page Metrics");
