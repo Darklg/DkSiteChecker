@@ -83,7 +83,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         'security': {
             'name': 'Security problems',
             'rules': [
-                'a[target]:not(rel)',
+                'a[target]:not([rel])',
             ]
         },
         'various': {
