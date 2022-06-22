@@ -76,6 +76,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         'perf': {
             'name': 'Performance problems',
             'rules': [
+                '[href*="fonts.google"]',
                 'img:not([loading])',
                 'iframe:not([loading])',
             ]
