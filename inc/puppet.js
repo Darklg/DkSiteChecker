@@ -68,6 +68,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         'access': {
             'name': 'Accessibility problems',
             'rules': [
+                'a:not([title]) > [class*="icon"]:only-child',
                 'button:not([title]) > [class*="icon"]:only-child',
                 'a[href="#"]:not([role])',
                 'i[class*="icon"]:not([aria-hidden])',
@@ -101,7 +102,7 @@ const puppet_args = JSON.parse(myArgs[0]);
                 'title:empty',
             ]
         }
-    }
+    };
 
     console.log("# Invalid elements");
 
