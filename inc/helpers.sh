@@ -5,7 +5,7 @@
 ###################################
 
 function dksitechecker_html_validator(){
-    echo "# HTML Validator";
+    dksitechecker_echo_title "# HTML Validator";
     html-validator "${1}" --islocal \
         --ignore='Error: Attribute “placeholder” not allowed on element “select” at this point.'\
         --ignore='Error: Bad value “none” for attribute “autocomplete” on element “input”: The string “none” is not a valid autofill field name.'\
@@ -22,7 +22,7 @@ function dksitechecker_html_validator(){
 ###################################
 
 function dksitechecker_docspeed(){
-    echo "# Page Speed";
+    dksitechecker_echo_title "# Page Speed";
     curl -s -w 'Time: %{time_total}\n' -o /dev/null "${1}"
 }
 
@@ -57,4 +57,14 @@ function dksitechecker_checkurl(){
     dksitechecker_html_validator "${1}";
     dksitechecker_docspeed "${1}";
     dksitechecker_headlesscheck "${1}" "${2}";
+}
+
+###################################
+## Color
+###################################
+
+function dksitechecker_echo_title(){
+    local RED='\033[0;33m'
+    local NC='\033[0m'
+    echo -e "${RED}${1}${NC}";
 }

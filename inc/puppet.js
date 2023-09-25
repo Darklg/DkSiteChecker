@@ -3,6 +3,10 @@ const puppeteer = require('puppeteer');
 
 const puppet_args = JSON.parse(myArgs[0]);
 
+function _puppet_message(message){
+    console.log('\x1b[33m'+message+'\x1b[0m');
+}
+
 (async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -50,7 +54,8 @@ const puppet_args = JSON.parse(myArgs[0]);
         element.sheet.insertRule(puppet_args.hidden_elements + '{display:none!important}', 0);
     }
 
-    console.log("# JS Errors");
+    _puppet_message("# JS Errors");
+
     await page.goto(puppet_args.urlcurrent);
     await page.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
     await page.setViewport(_viewport);
@@ -104,7 +109,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         }
     };
 
-    console.log("# Invalid elements");
+    _puppet_message("# Invalid elements");
 
     var _rule_count,
         _rules;
@@ -140,7 +145,7 @@ const puppet_args = JSON.parse(myArgs[0]);
         await page.evaluate(_special_rules[_rule_test]);
     }
 
-    console.log("# Page Metrics");
+    _puppet_message("# Page Metrics");
     const gitMetrics = await page.metrics();
     if (gitMetrics.Nodes > 1500) {
         console.info("- Too many DOM nodes : " + gitMetrics.Nodes)
