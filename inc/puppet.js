@@ -52,7 +52,7 @@ function _puppet_message(message){
         var element = document.createElement('style');
         document.head.appendChild(element);
         element.sheet.insertRule(puppet_args.hidden_elements + '{display:none!important}', 0);
-    }
+    };
 
     _puppet_message("# JS Errors");
 
@@ -73,6 +73,7 @@ function _puppet_message(message){
         'access': {
             'name': 'Accessibility problems',
             'rules': [
+                'time:not([datetime])',
                 'a:not([title]) > [class*="icon"]:only-child',
                 'button:not([title]) > [class*="icon"]:only-child',
                 'a[href="#"]:not([role])',
@@ -83,7 +84,7 @@ function _puppet_message(message){
             'name': 'Performance problems',
             'rules': [
                 '[href*="fonts.google"]',
-                'img:not([loading])',
+                'img:not([loading]):not([fetchpriority])',
                 'iframe:not([loading])',
             ]
         },
@@ -118,7 +119,7 @@ function _puppet_message(message){
         _rules = _rules_list[_rule_item].rules;
         for (var _rule in _rules) {
             try {
-                await page.$$(_rules[_rule])
+                await page.$$(_rules[_rule]);
                 if (_rule_count = (await page.$$(_rules[_rule])).length) {
                     console.log(" --- " + _rules[_rule] + " : " + _rule_count + " result(s)");
                 }
@@ -138,7 +139,7 @@ function _puppet_message(message){
         }
     }, function() {
         if (document.querySelectorAll('h1').length > 1) {
-            console.error('There is more than H1 element.');
+            console.error('There is more than one H1 element.');
         }
     }];
     for (var _rule_test in _special_rules) {
@@ -148,10 +149,10 @@ function _puppet_message(message){
     _puppet_message("# Page Metrics");
     const gitMetrics = await page.metrics();
     if (gitMetrics.Nodes > 1500) {
-        console.info("- Too many DOM nodes : " + gitMetrics.Nodes)
+        console.info("- Too many DOM nodes : " + gitMetrics.Nodes);
     }
     if (gitMetrics.ScriptDuration > 0.1) {
-        console.info("- Script Duration too long : " + gitMetrics.ScriptDuration)
+        console.info("- Script Duration is too long : " + gitMetrics.ScriptDuration);
     }
 
     if (puppet_args.urlsource.length) {
