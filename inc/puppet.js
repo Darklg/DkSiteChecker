@@ -3,6 +3,10 @@ const puppeteer = require('puppeteer');
 
 const puppet_args = JSON.parse(myArgs[0]);
 
+/* sleep func */
+/* thx to https://stackoverflow.com/a/77078415 */
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
 function _puppet_message(message){
     console.log('\x1b[33m'+message+'\x1b[0m');
 }
@@ -158,12 +162,12 @@ function _puppet_message(message){
     if (puppet_args.urlsource.length) {
         /* Screenshot current URL */
         console.log("- Screenshot current");
-        await page.waitForTimeout(3000);
+        await sleep(3000);
         await page.screenshot({
             path: `page-current.png`
         });
         await page.setViewport(_viewportmob);
-        await page.waitForTimeout(500);
+        await sleep(500);
         await page.screenshot({
             path: `pagemobile-current.png`
         });
@@ -176,12 +180,12 @@ function _puppet_message(message){
         await page2.goto(puppet_args.urlsource);
         await page2.evaluate(dksitechecker_hide_cookie_notices, puppet_args);
         await page2.setViewport(_viewport);
-        await page2.waitForTimeout(3000);
+        await sleep(3000);
         await page2.screenshot({
             path: `page-source.png`
         });
         await page2.setViewport(_viewportmob);
-        await page2.waitForTimeout(500);
+        await sleep(500);
         await page2.screenshot({
             path: `pagemobile-source.png`
         });
